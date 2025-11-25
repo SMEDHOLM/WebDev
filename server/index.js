@@ -2,10 +2,8 @@ import express from  "express";
 import multer from "multer"; 
 import mongoose from "mongoose";    
 import { registerValidation, loginValidation, postCreateValidation} from "./validations.js";
-import checkAuth from "./utils/checkAuth.js";
-import * as UserController from "./controllers/UserController.js";
-import * as PostController from "./controllers/PostController.js";
-import handleValidationErrors from "./utils/handleValidationErrors.js";
+import  {UserController, PostController} from "./controllers/index.js";
+import {handleValidationErrors, checkAuth} from "./utils/index.js";
 mongoose.connect("mongodb+srv://admin:admin@cluster0.xknsj14.mongodb.net/blog?appName=Cluster0").then(( ) => console.log('DB ok'))
 .catch(() => console.log("DB error", err));
 const app = express();
@@ -32,9 +30,9 @@ app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
 });
 app.get("/posts",  PostController.getAll);
 app.get("/posts/:id", PostController.getOne);
-app.post("/posts", checkAuth, postCreateValidation, PostController.create);
+app.post("/posts", checkAuth, postCreateValidation, handleValidationErrors, PostController.create);
 app.delete("/posts/:id", checkAuth,  PostController.remove);
-app.patch("/posts/:id", checkAuth, postCreateValidation, PostController.update);
+app.patch("/posts/:id", checkAuth, postCreateValidation, handleValidationErrors, PostController.update);
 
 app.listen(4444, (err) => {
     if (err) {
