@@ -24,7 +24,14 @@
     "react-scripts": "5.0.1",
     "react-simplemde-editor": "^5.0.2",
     "sass": "^1.52.1",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "bcrypt": "^6.0.0",
+    "express": "^5.1.0",
+    "express-validator": "^7.3.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.19.3",
+    "multer": "^2.0.2",
+    "nodemon": "^3.1.10"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -3,6 +3,7 @@ import multer from "multer";
 import mongoose from "mongoose";    
 import { registerValidation, loginValidation, postCreateValidation} from "./validations.js";
 import  {UserController, PostController} from "./controllers/index.js";
+import cors from 'cors'
 import {handleValidationErrors, checkAuth} from "./utils/index.js";
 mongoose.connect("mongodb+srv://admin:admin@cluster0.xknsj14.mongodb.net/blog?appName=Cluster0").then(( ) => console.log('DB ok'))
 .catch(() => console.log("DB error", err));
@@ -19,6 +20,7 @@ const storage = multer.diskStorage({
 const upload = multer({storage});
 
 app.use(express.json());
+app.use(cors());
 app.use('/uploads', express.static('uploads'));
 app.post("/auth/login",  loginValidation, handleValidationErrors, UserController.login );
 app.post("/auth/register",  registerValidation, handleValidationErrors, UserController.register);
@@ -29,6 +31,8 @@ app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
     });
 });
 app.get("/posts",  PostController.getAll);
+app.get("/tags",  PostController.getLastTags);
+app.get("/posts/tags",  PostController.getLastTags);
 app.get("/posts/:id", PostController.getOne);
 app.post("/posts", checkAuth, postCreateValidation, handleValidationErrors, PostController.create);
 app.delete("/posts/:id", checkAuth,  PostController.remove);
