@@ -5,7 +5,7 @@ import { registerValidation, loginValidation, postCreateValidation} from "./vali
 import  {UserController, PostController} from "./controllers/index.js";
 import cors from 'cors'
 import {handleValidationErrors, checkAuth} from "./utils/index.js";
-mongoose.connect("mongodb+srv://admin:admin@cluster0.xknsj14.mongodb.net/blog?appName=Cluster0").then(( ) => console.log('DB ok'))
+mongoose.connect("MongoDBLink").then(( ) => console.log('DB ok'))
 .catch(() => console.log("DB error", err));
 const app = express();
 const storage = multer.diskStorage({
