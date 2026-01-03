@@ -26,8 +26,8 @@ export const Home = () => {
   return (
     <>
       <Tabs style={{ marginBottom: 15 }} value={0} aria-label="basic tabs example">
-        <Tab label="Новые" />
-        <Tab label="Популярные" />
+        <Tab label="New" />
+        <Tab label="Popular" />
       </Tabs>
       <Grid container spacing={4}>
         <Grid xs={8} item>
@@ -36,7 +36,7 @@ export const Home = () => {
             <Post key ={index} isLoading={true} />
               ) : (
             <Post
-              _id={obj._id}
+              id={obj._id}
               title= {obj.title}
               imageUrl= {obj.imageUrl}
               user={obj.user}
