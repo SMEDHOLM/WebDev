@@ -23,7 +23,7 @@ export const Login = () => {
 
   const onSubmit = async (values) => {
     const data = await dispatch(fetchAuth(values));
-    if (data.payload) {
+    if (!data.payload) {
       return alert("authorization failed");
     }
     if ('token' in data.payload) {
