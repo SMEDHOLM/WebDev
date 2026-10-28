@@ -50,35 +50,36 @@ cd client
 npm install
 ```
 
-### Configure Environment
+### Run the Application Locally
 
-The backend currently contains a hardcoded MongoDB connection string in `server/index.js`.
-For production use, replace that with an environment variable before deployment.
+Set `MONGO_URI` and `JWT_SECRET` in the server terminal, then start the server from the project root:
 
-Example environment variables to add:
-
-```env
-MONGO_URI=mongodb+srv://<user>:<password>@cluster0.example.mongodb.net/blog
-JWT_SECRET=your_jwt_secret
-PORT=4444
+```powershell
+$env:MONGO_URI="your MongoDB Atlas connection string"
+$env:JWT_SECRET="your long random secret"
+npm start --prefix server
 ```
 
-### Run the Application
+In a second terminal, start the client:
 
-From the project root, start the server:
-
-```bash
-npm run start
-```
-
-Then start the client from inside `client/`:
-
-```bash
-cd client
-npm start
+```powershell
+npm start --prefix client
 ```
 
 The React app runs by default on `http://localhost:3000` and the API runs on `http://localhost:4444`.
+
+The server requires `MONGO_URI` and `JWT_SECRET` environment variables. Set them in your local shell or in a `server/.env` file loaded by your chosen environment loader. Never commit real credentials.
+
+### Deploy to Render
+
+Deploy the backend and frontend as two Render services connected to this repository:
+
+1. Create a **Web Service** with root directory `server`, build command `npm install`, and start command `npm start`. Set `MONGO_URI` to your MongoDB Atlas connection string and `JWT_SECRET` to a long, random secret in the Render environment settings. Render supplies `PORT` automatically.
+2. In MongoDB Atlas, allow network access from your Render service. For a quick setup, Atlas permits `0.0.0.0/0`; use strong database credentials and least-privilege access.
+3. Create a **Static Site** with root directory `client`, build command `npm install && npm run build`, and publish directory `build`. Set `REACT_APP_API_URL` to the deployed backend URL (for example, `https://your-api.onrender.com`) before deploying the site.
+4. The backend health check is available at `/health`.
+
+The current image upload implementation writes to the server's local `uploads` directory. Render's local filesystem is ephemeral, so uploaded images can disappear on redeploy or restart. Use a Render persistent disk or external object storage if uploaded images need to persist.
 
 ## Server API Endpoints
 

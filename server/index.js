@@ -5,8 +5,9 @@ import { registerValidation, loginValidation, postCreateValidation} from "./vali
 import  {UserController, PostController} from "./controllers/index.js";
 import cors from 'cors'
 import {handleValidationErrors, checkAuth} from "./utils/index.js";
-mongoose.connect("MongoDBLink").then(( ) => console.log('DB ok'))
-.catch(() => console.log("DB error", err));
+if (!process.env.MONGO_URI || !process.env.JWT_SECRET) {
+    throw new Error("MONGO_URI and JWT_SECRET environment variables are required");
+}
 const app = express();
 const storage = multer.diskStorage({
     destination: (_,__, cb) => {
@@ -22,6 +23,7 @@ const upload = multer({storage});
 app.use(express.json());
 app.use(cors());
 app.use('/uploads', express.static('uploads'));
+app.get("/health", (_req, res) => res.sendStatus(200));
 app.post("/auth/login",  loginValidation, handleValidationErrors, UserController.login );
 app.post("/auth/register",  registerValidation, handleValidationErrors, UserController.register);
 app.get("/auth/me", checkAuth, UserController.getMe);
@@ -38,9 +40,14 @@ app.post("/posts", checkAuth, postCreateValidation, handleValidationErrors, Post
 app.delete("/posts/:id", checkAuth,  PostController.remove);
 app.patch("/posts/:id", checkAuth, postCreateValidation, handleValidationErrors, PostController.update);
 
-app.listen(4444, (err) => {
-    if (err) {
-        return console.error(err);
-    }
-    console.log("Server OK");
+const start = async () => {
+    await mongoose.connect(process.env.MONGO_URI);
+    console.log("DB ok");
+    const port = process.env.PORT || 4444;
+    app.listen(port, () => console.log(`Server listening on port ${port}`));
+};
+
+start().catch((err) => {
+    console.error("Failed to start server", err);
+    process.exit(1);
 });
