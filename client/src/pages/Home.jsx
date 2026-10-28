@@ -9,13 +9,20 @@ import { TagsBlock } from '../components/TagsBlock';
 import { CommentsBlock } from '../components/CommentsBlock';
 import { fetchPosts, fetchTags} from '../redux/slices/posts';
 import Alert from '@mui/material/Alert';
+import { useParams } from 'react-router-dom';
 
 export const Home = () => {
+  const { tag } = useParams();
   const dispatch = useDispatch();
   const UserData= useSelector(state => state.auth.data); 
   const {posts, tags} = useSelector(state => state.posts); 
   const isPostsLoading = posts.status === "loading";
   const isTagsLoading = tags.status === "loading";
+  const visiblePosts = tag
+    ? posts.items.filter((post) =>
+        post.tags.some((postTag) => postTag.toLowerCase() === tag.toLowerCase()),
+      )
+    : posts.items;
   React.useEffect(() => {
   
     dispatch(fetchPosts());
@@ -30,16 +37,21 @@ export const Home = () => {
         <Tab label="New" />
         <Tab label="Popular" />
       </Tabs>
+      {tag && <h2>Posts tagged #{tag}</h2>}
       <Grid container spacing={4}>
         <Grid xs={8} item>
           {posts.status === "error" && (
             <Alert severity="error">Could not load posts. Check that the API server is running.</Alert>
           )}
-          {(isPostsLoading ? [...Array(5)] :posts.items).map((obj, index) => 
+          {!isPostsLoading && posts.status === "loaded" && tag && visiblePosts.length === 0 && (
+            <p>No posts found with this tag.</p>
+          )}
+          {(isPostsLoading ? [...Array(5)] : visiblePosts).map((obj, index) =>
             isPostsLoading ? (
             <Post key ={index} isLoading={true} />
               ) : (
             <Post
+              key={obj._id}
               id={obj._id}
               title= {obj.title}
               imageUrl= {obj.imageUrl ? `${API_BASE_URL}${obj.imageUrl}` : ""}
