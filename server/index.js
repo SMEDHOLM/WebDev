@@ -11,7 +11,7 @@ if (!process.env.MONGO_URI || !process.env.JWT_SECRET) {
 const app = express();
 const storage = multer.diskStorage({
     destination: (_,__, cb) => {
-        cb(null, 'uploads');
+        cb(null, 'uploads/covers');
     },
     filename: (_,file, cb) => {
         cb(null, file.originalname);
@@ -22,14 +22,14 @@ const upload = multer({storage});
 
 app.use(express.json());
 app.use(cors());
-app.use('/uploads', express.static('uploads'));
+app.use('uploads/covers', express.static('uploads/covers'));
 app.get("/health", (_req, res) => res.sendStatus(200));
 app.post("/auth/login",  loginValidation, handleValidationErrors, UserController.login );
 app.post("/auth/register",  registerValidation, handleValidationErrors, UserController.register);
 app.get("/auth/me", checkAuth, UserController.getMe);
 app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
     res.json({
-        url: `/uploads/${req.file.originalname}`,
+        url: `/uploads/covers/${req.file.originalname}`,
     });
 });
 app.get("/posts",  PostController.getAll);
