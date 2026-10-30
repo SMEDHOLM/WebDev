@@ -116,7 +116,7 @@ server/
 ## Notes
 
 - The server uses port `4444` by default.
-- Uploaded images are served from `/uploads`.
+- Uploaded images are served under `/uploads` (new uploads use `/uploads/covers`).
 - Enhance security by moving secrets to `.env` and not committing them to source control.
 
 ## Recommended Improvements

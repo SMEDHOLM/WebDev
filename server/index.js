@@ -22,7 +22,7 @@ const upload = multer({storage});
 
 app.use(express.json());
 app.use(cors());
-app.use('uploads/covers', express.static('uploads/covers'));
+app.use('/uploads', express.static('uploads'));
 app.get("/health", (_req, res) => res.sendStatus(200));
 app.post("/auth/login",  loginValidation, handleValidationErrors, UserController.login );
 app.post("/auth/register",  registerValidation, handleValidationErrors, UserController.register);
