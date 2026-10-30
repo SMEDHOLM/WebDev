@@ -27,7 +27,7 @@ app.get("/health", (_req, res) => res.sendStatus(200));
 app.post("/auth/login",  loginValidation, handleValidationErrors, UserController.login );
 app.post("/auth/register",  registerValidation, handleValidationErrors, UserController.register);
 app.get("/auth/me", checkAuth, UserController.getMe);
-app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
+app.post('/uploadCover', checkAuth, upload.single('image'), (req, res) => {
     res.json({
         url: `/uploads/covers/${req.file.originalname}`,
     });
